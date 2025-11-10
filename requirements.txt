@@ -1,0 +1,41 @@
+# Core LLM / LangChain stack
+langchain==0.3.8
+langchain-community==0.3.8
+langchain-openai==0.2.12
+langchain-text-splitters==0.3.2
+langgraph==0.2.36
+
+# Vector DB
+faiss-cpu==1.8.0
+
+# PDF handling
+pypdf==4.2.0
+
+# Web / API
+fastapi==0.111.0
+uvicorn[standard]==0.30.0
+
+# Streamlit UI
+streamlit==1.36.0
+
+# Web search & content extraction
+duckduckgo-search==6.1.9
+ddgs>=9.0.0,<10
+trafilatura==1.10.0
+beautifulsoup4==4.12.3
+requests==2.32.3
+httpx==0.27.0
+
+# OpenAI / Azure SDKs
+openai==1.51.0
+tiktoken==0.7.0
+
+# Utilities
+python-dotenv==1.0.1
+tenacity==8.4.1
+
+# Optional (for graph visualization)
+IPython==8.26.0
+
+# Compatibility fixes
+numpy<2.0

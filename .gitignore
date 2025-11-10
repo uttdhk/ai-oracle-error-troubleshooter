@@ -1,0 +1,45 @@
+# --- Python 캐시 ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# --- 가상환경 ---
+.venv/
+venv/
+env/
+
+# --- IDE / OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# --- 로그 / 임시 ---
+logs/
+*.log
+*.tmp
+*.bak
+
+# --- 데이터 ---
+# 공개 PDF 문서(data/pdfs)는 포함하되, 인덱스/캐시/임시 파일은 제외
+data/faiss_index/
+data/**/*.faiss
+data/**/*.bin
+data/**/*.idx
+data/temp/
+data/**/*.pkl
+
+# 샘플 데이터는 허용
+!data/samples/
+!data/pdfs/
+!data/**/*.pdf
+
+# --- 빌드 산출물 ---
+dist/
+build/
+*.spec
+*.exe
+
+# --- Streamlit 캐시 ---
+.streamlit/
