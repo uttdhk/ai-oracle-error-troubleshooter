@@ -51,4 +51,114 @@ ai-oracle-error-troubleshooter/
 
 ---
 
-(이하 내용은 동일 — 설치, 인덱싱, Streamlit, FastAPI, License, Author 포함)
+## 🔑 환경 변수 (.env 예시)
+```bash
+AOAI_ENDPOINT=https://<your-azure-openai-endpoint>.openai.azure.com/
+AOAI_API_KEY=<your-key>
+AZURE_OPENAI_API_VERSION=2024-08-01-preview
+AOAI_DEPLOY_GPT4O=gpt-4o
+AOAI_DEPLOY_GPT4O_MINI=gpt-4o-mini
+AOAI_DEPLOY_EMBED_3_LARGE=text-embedding-3-large
+```
+
+---
+
+## 📦 설치
+```bash
+# 1️⃣ 가상환경 생성
+python -m venv .venv
+.venv\Scripts\activate  # Windows
+# source .venv/bin/activate  # macOS/Linux
+
+# 2️⃣ 최신 pip으로 업그레이드
+python -m pip install --upgrade pip setuptools wheel
+
+# 3️⃣ 필수 패키지 설치
+pip install -r requirements.txt
+```
+
+---
+
+## 📚 인덱싱 (RAG 생성)
+```bash
+# PDF 문서 임베딩 → FAISS 인덱스 생성
+python -m app.rag.ingest --pdf_dir ./data/pdfs --db_dir ./data/faiss_index --batch_size 32
+# 완전 초기화 시 --rebuild 추가
+```
+
+---
+
+## ▶ 실행 (Streamlit)
+```bash
+streamlit run app/streamlit_app.py --server.port 8080
+```
+- **Allow web fallback**: 로컬 문서에 직접 조치가 없을 때만 웹 보강 ([W#])  
+- 상태:  
+  - “🔍 분석중…” → 로컬 분석 중  
+  - “🌐 웹 검색중…” → 폴백 수행 중  
+  - “✅ 완료” → 결과 표시  
+
+---
+
+## 🌐 FastAPI 실행
+```bash
+uvicorn app.server.api:app --reload --port 8000
+```
+
+예제 요청 (PowerShell):
+```powershell
+$DB = (Resolve-Path .\data\faiss_index).Path
+$body = @{
+  query     = "ORA-12143"
+  db_dir    = $DB
+  strict    = $true
+  allow_web = $true
+  locale    = "ko"
+} | ConvertTo-Json
+
+$response = Invoke-RestMethod -Method POST "http://127.0.0.1:8000/troubleshoot" `
+  -Headers @{ "Content-Type" = "application/json" } `
+  -Body $body
+$response
+```
+
+응답(JSON 예시):
+```json
+{
+  "causes": [
+    "The specified pluggable database (PDB) does not exist.",
+    "The user does not have privileges to access the PDB."
+  ],
+  "solution_markdown": "## 요약 ...",
+  "web_sources": [
+    {"wid": "W1", "title": "...", "url": "..."}
+  ]
+}
+```
+
+---
+
+## ✅ 그래프 시각화
+```bash
+npm i -g @mermaid-js/mermaid-cli@10
+python -m app.tools.graph_viz
+```
+
+---
+
+## 💬 자주 묻는 문제
+- `ModuleNotFoundError: app` → 루트에서 실행 필요
+- 웹 폴백 결과 0건 → STRICT_ORA_MATCH / 길이 컷 확인
+- `thread_id` 오류 → 세션 생성 시 자동 주입 확인
+- 로컬 Source가 비어 있음 → Unknown source 방어 로직 적용됨
+
+---
+
+## 🧾 License
+This project is distributed under the MIT License.
+
+---
+
+## 🧠 Author
+**uttdhk**  
+AI Oracle Error Troubleshooter (2025)
